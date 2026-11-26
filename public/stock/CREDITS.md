@@ -1,0 +1,3 @@
+- ember-morning.jpg: Photo by Layenday on Pixabay (https://pixabay.com/photos/tea-teacup-flowers-vase-warm-tea-6405249/)
+- ember-pixels.jpg: Photo by Pexels on Pixabay (https://pixabay.com/photos/apple-macbook-notebook-computer-1853259/)
+- ember-journal.jpg: Photo by Pexels on Pixabay (https://pixabay.com/photos/notebook-notes-pen-writing-diary-1840276/)
