@@ -29,6 +29,7 @@ export default function YearScreen() {
 
   return (
     <ScrollView
+      tabIndex={0}
       style={[styles.flex, { backgroundColor: theme.background }]}
       contentContainerStyle={[
         styles.content,
@@ -62,6 +63,7 @@ export default function YearScreen() {
                 </View>
                 <View
                   accessible
+                  accessibilityRole="image"
                   accessibilityLabel={keptDays.length ? name + ', days kept: ' + keptDays.join(', ') : name + ', no check-ins'}
                   style={styles.cells}>
                   {Array.from({ length: firstOffset }).map((_, i) => (

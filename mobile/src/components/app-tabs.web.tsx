@@ -1,3 +1,5 @@
+import { usePathname } from 'expo-router';
+import Head from 'expo-router/head';
 import {
   Tabs,
   TabList,
@@ -14,8 +16,11 @@ import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 export default function AppTabs() {
+  const pathname = usePathname();
+  const pageName = pathname === '/year' ? 'Year' : pathname === '/settings' ? 'Settings' : pathname === '/' ? 'Today' : 'Ember';
   return (
     <Tabs>
+      <Head><title>{pageName === 'Ember' ? 'Ember' : pageName + ' · Ember'}</title></Head>
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="home" href="/" asChild>
