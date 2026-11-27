@@ -1,33 +1,21 @@
 import Image from "next/image";
 
-const YEAR_CELLS = 336; // 14 cols x 24 rows demo grid
-
-function buildDemoCells(): ("lit" | "ember" | "")[] {
-  // Deterministic demo: a streak building over the year, ember = today's check-in.
-  const cells: ("lit" | "ember" | "")[] = [];
-  for (let i = 0; i < YEAR_CELLS; i++) {
-    const momentum = i / YEAR_CELLS;
-    const rhythm = Math.sin(i * 1.7) * 0.5 + 0.5;
-    cells.push(momentum * 0.85 + rhythm * 0.25 > 0.55 ? "lit" : "");
-  }
-  cells[cells.length - 1] = "ember";
-  return cells;
-}
-
-const demoCells = buildDemoCells();
+// A fictional month for the public reading example. The app uses the user's local dates.
+const sampleCheckins = new Set([1, 2, 4, 6, 7, 8, 9, 12, 13, 14, 17, 18, 20, 21, 24]);
+const weekdays = ["M", "T", "W", "T", "F", "S", "S"];
 
 const steps = [
   {
     title: "Pick one tiny habit",
-    body: "Not a routine — one ritual. Two minutes of reading. One glass of water before coffee. Small enough that you can't talk yourself out of it.",
+    body: "Read one page. Water the basil. Pick something small enough to repeat on an ordinary Tuesday.",
   },
   {
     title: "Tap once each morning",
-    body: "Open Ember, tap the flame, done. No forms, no timers, no guilt-driven analytics. Sixty seconds is the whole ask.",
+    body: "When you finish, tap the flame. Your check-in stays on this device, even when you’re offline.",
   },
   {
     title: "Watch your year fill in",
-    body: "Every check-in lights a pixel. Miss a day and nothing breaks — the grid waits, and tomorrow is another square.",
+    body: "Each day has its own square. A missed day leaves a space beside the days you kept.",
   },
 ];
 
@@ -38,15 +26,15 @@ const faqs = [
   },
   {
     q: "What happens if I miss a day?",
-    a: "Nothing dramatic. Your streak pauses and the grid simply leaves that square blank. Ember is built around gentleness, not broken-chain shame.",
+    a: "The square stays blank. Your past check-ins stay in the year view, and you can tap again tomorrow.",
   },
   {
     q: "Is my data private?",
-    a: "Your check-ins live on your device. We don't sell data and we don't run ads. Sync across your devices comes with the subscription.",
+    a: "Your check-ins live on your device. We don't sell data and we don't run ads. Sync is planned for Ember Unlimited.",
   },
   {
-    q: "Why isn't it free forever?",
-    a: "The free tier covers your first ritual, forever. $2.99/month funds development, keeps Ember ad-free, and unlocks unlimited rituals, sync and gentle streak reminders.",
+    q: "What is included for free?",
+    a: "You can keep one ritual on your device for free. A paid plan for multiple rituals, sync and reminders is planned for the App Store release.",
   },
 ];
 
@@ -101,135 +89,58 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="section tinted" id="how">
-          <div className="wrap">
-            <div className="section-head">
-              <p className="eyebrow">How it works</p>
-              <h2>Three steps. No dashboard required.</h2>
-              <p>
-                Habit apps fail when they ask for too much. Ember asks for one habit,
-                one tap, sixty seconds a day.
-              </p>
+        <section className="journal" id="how" aria-labelledby="how-title">
+          <div className="wrap journal-spread">
+            <div>
+              <h2 id="how-title">How to keep a ritual</h2>
+              <p className="margin-note">A morning’s worth of practice.</p>
             </div>
-            <div className="steps">
-              {steps.map((s) => (
-                <article className="step" key={s.title}>
-                  <h3>{s.title}</h3>
-                  <p>{s.body}</p>
-                </article>
+            <ol className="steps">
+              {steps.map((step) => (
+                <li key={step.title}><h3>{step.title}</h3><p>{step.body}</p></li>
               ))}
-            </div>
+            </ol>
           </div>
         </section>
 
-        <section className="section" id="year">
-          <div className="wrap split">
+        <section className="almanac" id="year" aria-labelledby="year-title">
+          <div className="wrap journal-spread">
             <div>
-              <p className="eyebrow">Year in pixels</p>
-              <h2>A view you&rsquo;ll want to keep filling</h2>
-              <p className="body">
-                Ember turns your year into a grid of small squares. Each morning you keep
-                your ritual, another square lights up — the quiet proof of who you&rsquo;re
-                becoming, collected in one glance.
-              </p>
-              <p className="body">
-                It isn&rsquo;t a streak counter that shames you when it breaks. It&rsquo;s a
-                record, and a record is forgiving.
-              </p>
-              <a className="btn btn-primary" href="#pricing">Start your first ritual</a>
+              <h2 id="year-title">A year in pixels</h2>
+              <p>Look back on the days you read a page, took the walk or wrote a sentence. Each square holds one day.</p>
             </div>
-            <div className="year-demo" role="img" aria-label="Example year-in-pixels grid, mostly filled with green squares and today lit in ember">
-              <p className="month-label">One page of reading · Day 218</p>
-              <div className="year-grid" aria-hidden="true">
-                {demoCells.map((state, i) => (
-                  <span key={i} className={`cell ${state}`} />
+            <figure className="month">
+              <figcaption><span>June 2026</span><small>Illustrated month</small></figcaption>
+              <div className="calendar" aria-hidden="true">
+                {weekdays.map((label, index) => <b key={index}>{label}</b>)}
+                {Array.from({ length: 30 }, (_, i) => i + 1).map(day => (
+                  <span key={day} className={sampleCheckins.has(day) ? "kept" : ""}>{day}</span>
                 ))}
               </div>
-              <div className="legend">
-                <span>218 of 336 days kept</span>
-                <span className="swatches">
-                  kept <i style={{ background: "var(--accent)" }} />
-                  today <i style={{ background: "var(--ember)" }} />
-                  missed <i style={{ background: "var(--accent-soft)" }} />
-                </span>
-              </div>
-            </div>
+              <p>One page of reading <strong>{sampleCheckins.size} days kept</strong></p>
+            </figure>
           </div>
         </section>
 
-        <section className="section tinted quote-band">
-          <div className="wrap">
-            <blockquote>
-              &ldquo;After twenty years of abandoned habit trackers, I&rsquo;ve kept a
-              two-minute walk every morning for five months. Ember never made me feel
-              bad about the days I missed.&rdquo;
-            </blockquote>
-            <cite>Mara T., kept 148 days and counting</cite>
+        <section className="journal" id="pricing" aria-labelledby="pricing-title">
+          <div className="wrap journal-spread">
+            <h2 id="pricing-title">Rituals &amp; pricing</h2>
+            <dl className="plans">
+              <div><dt>One ritual <strong>Free</strong></dt>
+              <dd>Keep one daily ritual and see your year in pixels. Check-ins are stored on this device.</dd></div>
+              <div><dt>Unlimited <strong>$2.99 / month</strong></dt>
+              <dd>Planned for the App Store release, with a seven-day trial. Multiple rituals, device sync and reminders are in development.</dd></div>
+            </dl>
           </div>
         </section>
 
-        <section className="section" id="pricing">
-          <div className="wrap">
-            <div className="section-head">
-              <p className="eyebrow">Pricing</p>
-              <h2>Free to start. Quietly priced.</h2>
-              <p>Keep your first ritual free, forever. Go unlimited when Ember has earned it.</p>
-            </div>
-            <div className="pricing-grid">
-              <article className="plan">
-                <h3>Single ember</h3>
-                <p className="price">Free</p>
-                <ul>
-                  <li>One daily ritual, forever</li>
-                  <li>Year-in-pixels view</li>
-                  <li>Offline first — your data stays on your device</li>
-                </ul>
-                <a className="btn btn-ghost" href="#pricing">Start your first ritual</a>
-              </article>
-              <article className="plan featured">
-                <span className="flag">Most kept</span>
-                <h3>Unlimited</h3>
-                <p className="price">$2.99 <span>/ month</span></p>
-                <ul>
-                  <li>Unlimited rituals</li>
-                  <li>Sync across your iPhone and iPad</li>
-                  <li>Gentle streak reminders, tuned by you</li>
-                  <li>Every future ember feature</li>
-                </ul>
-                <a className="btn btn-primary" href="#pricing">Start 7-day free trial</a>
-                <p className="trial">7 days free, then $2.99/month. Cancel anytime in the App Store.</p>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section className="section" id="faq">
-          <div className="wrap">
-            <div className="section-head">
-              <p className="eyebrow">Questions</p>
-              <h2>Asked and answered</h2>
-            </div>
+        <section className="journal faq-section" id="faq" aria-labelledby="faq-title">
+          <div className="wrap journal-spread">
+            <h2 id="faq-title">Questions</h2>
             <div className="faq">
               {faqs.map((f) => (
-                <details key={f.q}>
-                  <summary>{f.q}</summary>
-                  <p>{f.a}</p>
-                </details>
+                <details key={f.q}><summary>{f.q}</summary><p>{f.a}</p></details>
               ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section">
-          <div className="wrap">
-            <div className="final">
-              <p className="eyebrow" style={{ color: "#DCE2D2" }}>A minute a day, kept</p>
-              <h2>Tomorrow morning, tap once</h2>
-              <p>
-                Choose one small thing you&rsquo;d like to keep. Ember will hold the rest
-                of it quietly for you.
-              </p>
-              <a className="btn btn-primary" href="#pricing">Start your first ritual</a>
             </div>
           </div>
         </section>
