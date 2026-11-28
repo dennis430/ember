@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { StyleSheet, TextInput } from 'react-native';
+import { ScrollView, StyleSheet, TextInput } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, Spacing } from '@/constants/theme';
+import { BottomTabInset, Fonts, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { API_URL } from '@/lib/config';
 import { useRitual } from '@/lib/ritual-context';
@@ -21,9 +21,9 @@ export default function SettingsScreen() {
   const name = draft ?? ritual.name;
 
   return (
-    <ThemedView style={styles.container}>
+    <ScrollView style={{ backgroundColor: theme.background }} contentContainerStyle={[styles.container, { paddingTop: insets.top + Spacing.four }]}>
       <ThemedView style={styles.section}>
-        <ThemedText type="subtitle">Your ritual</ThemedText>
+        <ThemedText accessibilityRole="header" style={styles.title}>Your ritual</ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
           Keep it tiny. One habit you can do in a couple of minutes, most days.
         </ThemedText>
@@ -45,10 +45,10 @@ export default function SettingsScreen() {
       </ThemedView>
 
       <ThemedView type="backgroundElement" style={styles.planCard}>
-        <ThemedText type="subtitle">Ember Unlimited — $2.99/month</ThemedText>
+        <ThemedText type="smallBold">Ember Unlimited · $2.99/month</ThemedText>
         <ThemedText type="small" themeColor="textSecondary">
           Unlimited rituals, sync across your devices, and gentle streak reminders.
-          Subscriptions are arriving with the App Store release; until then every
+          Subscriptions are planned for the App Store release. Today every
           feature you see is free.
         </ThemedText>
       </ThemedView>
@@ -59,30 +59,30 @@ export default function SettingsScreen() {
           {API_URL.replace(/^https?:\/\//, '')}.
         </ThemedText>
       </ThemedView>
-    </ThemedView>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   container: {
-    flex: 1,
+    width: '100%', maxWidth: 620, alignSelf: 'center',
     gap: Spacing.four,
     paddingHorizontal: Spacing.four,
-    paddingTop: Spacing.six,
     paddingBottom: BottomTabInset + Spacing.four,
   },
+  title: { fontFamily: Fonts.serif, fontSize: 38, lineHeight: 45 },
   section: { gap: Spacing.two },
   input: {
     minHeight: 48,
     borderWidth: 1,
-    borderRadius: Spacing.three,
+    borderRadius: 4,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
     fontSize: 17,
   },
   planCard: {
-    borderRadius: Spacing.four,
+    borderRadius: 4,
     padding: Spacing.four,
     gap: Spacing.two,
   },

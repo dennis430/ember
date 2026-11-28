@@ -1,3 +1,5 @@
+import { usePathname } from 'expo-router';
+import Head from 'expo-router/head';
 import {
   Tabs,
   TabList,
@@ -6,17 +8,19 @@ import {
   TabTriggerSlotProps,
   TabListProps,
 } from 'expo-router/ui';
-import { Pressable, useColorScheme, View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, View, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
 
-import { Colors, MaxContentWidth, Spacing } from '@/constants/theme';
+import { MaxContentWidth, Spacing } from '@/constants/theme';
 
 import { ThemedText } from './themed-text';
 import { ThemedView } from './themed-view';
 
 export default function AppTabs() {
+  const pathname = usePathname();
+  const pageName = pathname === '/year' ? 'Year' : pathname === '/settings' ? 'Settings' : pathname === '/' ? 'Today' : 'Ember';
   return (
     <Tabs>
-      <TabSlot style={{ height: '100%' }} />
+      <Head><title>{pageName === 'Ember' ? 'Ember' : pageName + ' · Ember'}</title></Head>
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="home" href="/" asChild>
@@ -30,6 +34,7 @@ export default function AppTabs() {
           </TabTrigger>
         </CustomTabList>
       </TabList>
+      <TabSlot style={{ flex: 1 }} />
     </Tabs>
   );
 }
@@ -60,8 +65,6 @@ export function TabButton({ children, isFocused, ...props }: TabTriggerSlotProps
 }
 
 export function CustomTabList(props: TabListProps) {
-  const scheme = useColorScheme();
-
   return (
     <View {...props} style={styles.tabListContainer}>
       <ThemedView type="backgroundElement" style={styles.innerContainer}>
@@ -77,17 +80,17 @@ export function CustomTabList(props: TabListProps) {
 
 const styles = StyleSheet.create({
   tabListContainer: {
-    position: 'absolute',
     width: '100%',
-    padding: Spacing.three,
+    paddingHorizontal: Spacing.three,
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
   innerContainer: {
     paddingVertical: Spacing.two,
-    paddingHorizontal: Spacing.five,
-    borderRadius: Spacing.five,
+    paddingHorizontal: Spacing.two,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderColor: '#989384',
     flexDirection: 'row',
     alignItems: 'center',
     flexGrow: 1,
@@ -102,7 +105,9 @@ const styles = StyleSheet.create({
   },
   tabButtonView: {
     paddingVertical: Spacing.one,
-    paddingHorizontal: Spacing.three,
-    borderRadius: Spacing.three,
+    paddingHorizontal: Spacing.two,
+    minHeight: 44,
+    justifyContent: 'center',
+    borderRadius: 4,
   },
 });
